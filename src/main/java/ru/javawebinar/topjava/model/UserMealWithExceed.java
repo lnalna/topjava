@@ -21,7 +21,7 @@ public class UserMealWithExceed {
         this.calories = calories;
         this.exceed = exceed;
     }
-//getters for testing
+//getters for testing, must be deleted
     public LocalDateTime getDateTime() {
         return dateTime;
     }
