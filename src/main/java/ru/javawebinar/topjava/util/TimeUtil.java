@@ -1,10 +1,9 @@
 package ru.javawebinar.topjava.util;
 
 import java.time.LocalTime;
-
 /**
- * GKislin
- * 07.01.2015.
+ * Nikolay Lobachev
+ * 10.07.2017.
  */
 public class TimeUtil {
     public static boolean isBetween(LocalTime lt, LocalTime startTime, LocalTime endTime) {
