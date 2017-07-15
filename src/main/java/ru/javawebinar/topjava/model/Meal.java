@@ -4,6 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+
+/**
+ * Created by Nikolay Lobachev.
+ */
+
 public class Meal {
     private final LocalDateTime dateTime;
 
