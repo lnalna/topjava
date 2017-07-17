@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * Created by Nikolay Lobachev.
  */
-public interface MealRepository {
+public interface MealDao {
 
     Meal get(int id);
     Collection<Meal> getAll();

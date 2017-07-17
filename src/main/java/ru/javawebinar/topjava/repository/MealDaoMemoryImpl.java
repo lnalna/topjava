@@ -12,9 +12,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by Nikolay Lobachev.
  */
-public class MealRepositoryImpl implements MealRepository {
+public class MealDaoMemoryImpl implements MealDao {
 
-    private Map<Integer,Meal> mealRepository = new ConcurrentHashMap<>();
+    private Map<Integer,Meal> mealDaoMap = new ConcurrentHashMap<>();
     private AtomicInteger mealId = new AtomicInteger(0);
 
 
@@ -28,26 +28,26 @@ public class MealRepositoryImpl implements MealRepository {
     }
     @Override
     public Meal get(int id) {
-        return mealRepository.get(id);
+        return mealDaoMap.get(id);
     }
 
     @Override
     public Collection<Meal> getAll() {
-        return mealRepository.values();
+        return mealDaoMap.values();
     }
 
     @Override
     public void delete(int id) {
-        mealRepository.remove(id);
+        mealDaoMap.remove(id);
     }
 
     @Override
     public Meal createOrUpdate(Meal meal) {
 
-        if(meal.isNullMealId()){
-            meal.setMealId(mealId.incrementAndGet());
+        if(meal.isNullId()){
+            meal.setId(mealId.incrementAndGet());
         }
 
-        return mealRepository.put(meal.getMealId(), meal);
+        return mealDaoMap.put(meal.getId(), meal);
     }
 }
