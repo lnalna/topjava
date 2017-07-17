@@ -29,7 +29,7 @@ public class MealsUtil {
 
     public static void main(String[] args) {
 
-        List<MealWithExceed> mealsWithExceededWithoutTimeLimit = getFilteredWithExceededWithoutTimeLimit(MEALS, 2000);
+        List<MealWithExceed> mealsWithExceeded = getFilteredWithExceeded(MEALS,LocalTime.MIN,LocalTime.MAX, 2000);
     }
 
     public static List<MealWithExceed> getFilteredWithExceeded(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
@@ -57,18 +57,6 @@ public class MealsUtil {
             }
         });
         return mealsWithExceeded;
-    }
-
-    public static List<MealWithExceed> getFilteredWithExceededWithoutTimeLimit(List<Meal> meals,int caloriesPerDay){
-        Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
-                .collect(
-                        Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
-//                      Collectors.toMap(Meal::getDate, Meal::getCalories, Integer::sum)
-                );
-
-        return meals.stream()
-                .map(meal -> createWithExceed(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
-                .collect(Collectors.toList());
     }
 
     public static MealWithExceed createWithExceed(Meal meal, boolean exceeded) {
