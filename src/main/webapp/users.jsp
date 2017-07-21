@@ -10,6 +10,7 @@
 <table border="1" cellpadding="8" cellspacing="0">
     <thead>
     <tr>
+        <th>Id</th>
         <th>Name</th>
         <th>Email</th>
         <th>Enabled/Disabled</th>
@@ -19,6 +20,7 @@
     <c:forEach items="${users}" var="user">
         <jsp:useBean id="user" scope="page" type="ru.javawebinar.topjava.model.User"/>
         <tr>
+            <td>${user.id}</td>
             <td>${user.name}</td>
             <td>${user.email}</td>
             <td>${user.enabled}</td>

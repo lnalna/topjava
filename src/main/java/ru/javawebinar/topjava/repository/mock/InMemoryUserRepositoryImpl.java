@@ -7,11 +7,12 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepositoryImpl implements UserRepository {
@@ -25,6 +26,8 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         save(new User(2,"user","user@useremail.ru","userpassword",Role.ROLE_USER));
         save(new User(3,"aaauser","aaauser@useremail.ru","userpassword",Role.ROLE_USER));
         save(new User(4,"bbbuser","bbbuser@useremail.ru","userpassword",Role.ROLE_USER));
+        save(new User(6,"test","test@testemail.ru","userpassword",Role.ROLE_USER));
+        save(new User(5,"test","test@testemail.ru","userpassword",Role.ROLE_USER));
     }
 
     @Override
@@ -55,11 +58,10 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     public List<User> getAll() {
         log.info("getAll");
 
-        List<User> listUsers = new ArrayList<>(repository.values());
-        listUsers.sort((u1,u2)->u1.getName().compareTo(u2.getName()));
-
-
-        return listUsers;
+        return repository.values()
+                .stream()
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getId))
+                .collect(Collectors.toList());
     }
 
     @Override
