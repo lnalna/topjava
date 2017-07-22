@@ -1,7 +1,9 @@
 package ru.javawebinar.topjava.repository.mock;
 
+import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -12,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+
+@Repository
 public class InMemoryMealRepositoryImpl implements MealRepository {
 
     // Map<userId, Map<mealId,meal>> repository
@@ -46,18 +50,18 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public boolean delete(int mealId, int userId) {
 
-        Map<Integer,Meal> userMeals = repository.get(userId);
+        Map<Integer,Meal> meals = repository.get(userId);
 
-        return !userMeals.isEmpty() && userMeals.remove(mealId) != null;
+        return !meals.isEmpty() && meals.remove(mealId) != null;
 
     }
 
     @Override
     public Meal get(int mealId, int userId) {
 
-        Map<Integer,Meal> userMeals = repository.get(userId);
+        Map<Integer,Meal> meals = repository.get(userId);
 
-        return userMeals.isEmpty() ? null: userMeals.get(mealId);
+        return meals.isEmpty() ? null: meals.get(mealId);
     }
 
     @Override
@@ -66,6 +70,14 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         return repository.get(userId).values()
                 .stream()
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<Meal> getMealsBetweenDateTime(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
+        return getAll(userId)
+                .stream()
+                .filter(meal -> DateTimeUtil.isBetween(meal.getDateTime(), startDateTime, endDateTime))
                 .collect(Collectors.toList());
     }
 }
