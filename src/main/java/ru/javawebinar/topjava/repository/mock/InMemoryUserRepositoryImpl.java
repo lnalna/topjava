@@ -31,27 +31,16 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean delete(int id) {
-        log.info("delete {}", id);
-
-        return repository.remove(id)!=null;
-    }
-
-    @Override
     public User save(User user) {
         log.info("save {}", user);
 
         if(user.isNew())
             user.setId(counter.incrementAndGet());
 
+        else if (get(user.getId()) == null)
+            return null;
+
         return repository.put(user.getId(), user);
-    }
-
-    @Override
-    public User get(int id) {
-        log.info("get {}", id);
-
-        return repository.get(id);
     }
 
     @Override
@@ -62,6 +51,22 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
                 .stream()
                 .sorted(Comparator.comparing(User::getName).thenComparing(User::getId))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean delete(int id) {
+        log.info("delete {}", id);
+
+        User user = repository.get(id);
+        return user != null && repository.remove(id)!=null;
+    }
+
+    @Override
+    public User get(int id) {
+        log.info("get {}", id);
+
+        User user = repository.get(id);
+        return user == null ? null : repository.get(id);
     }
 
     @Override

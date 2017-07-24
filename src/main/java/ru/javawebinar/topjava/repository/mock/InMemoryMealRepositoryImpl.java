@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collection;
@@ -35,33 +36,16 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Meal save(Meal meal, int userId) {
 
-        if (meal.isNew()) {
+        if (meal.isNew())
             meal.setId(counter.incrementAndGet());
 
-        } else if (get(meal.getId(), userId) == null)
+        else if (get(meal.getId(), userId) == null)
             return null;
 
         Map<Integer, Meal> meals = repository.computeIfAbsent(userId, ConcurrentHashMap::new);
         meals.put(meal.getId(),meal);
 
         return meal;
-    }
-
-    @Override
-    public boolean delete(int mealId, int userId) {
-
-        Map<Integer,Meal> meals = repository.get(userId);
-
-        return !meals.isEmpty() && meals.remove(mealId) != null;
-
-    }
-
-    @Override
-    public Meal get(int mealId, int userId) {
-
-        Map<Integer,Meal> meals = repository.get(userId);
-
-        return meals.isEmpty() ? null: meals.get(mealId);
     }
 
     @Override
@@ -74,10 +58,27 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getMealsBetweenDateTime(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
+    public boolean delete(int mealId, int userId) {
+
+        Map<Integer,Meal> meals = repository.get(userId);
+
+        return meals != null && meals.remove(mealId) != null;
+
+    }
+
+    @Override
+    public Meal get(int mealId, int userId) {
+
+        Map<Integer,Meal> meals = repository.get(userId);
+
+        return meals == null ? null: meals.get(mealId);
+    }
+
+    @Override
+    public Collection<Meal> getMealsBetweenDate(LocalDate startDate, LocalDate endDate, int userId) {
         return getAll(userId)
                 .stream()
-                .filter(meal -> DateTimeUtil.isBetween(meal.getDateTime(), startDateTime, endDateTime))
+                .filter(meal -> DateTimeUtil.isBetween(meal.getDate(), startDate, endDate))
                 .collect(Collectors.toList());
     }
 }

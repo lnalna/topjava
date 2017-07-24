@@ -11,7 +11,6 @@ import ru.javawebinar.topjava.web.user.AdminRestController;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
@@ -41,13 +40,16 @@ public class SpringMain {
             System.out.println("\n--MealRestController.create()--\n");
             System.out.println(mealRestController.create(new Meal(LocalDateTime.of(2017, Month.JULY, 22, 20, 0), "Ужин", 510)).toString());
 
+            System.out.println("\n--MealRestController.create()--\n");
+            System.out.println(mealRestController.create(new Meal(LocalDateTime.of(2017, Month.JULY, 24, 20, 0), "Ужин", 550)).toString());
+
             System.out.println("\n--MealRestController.update--\n");
             mealRestController.update(new Meal(LocalDateTime.of(2017, Month.JULY, 22, 14, 0), "Обед", 5100), 2);
             mealRestController.getAll().forEach(System.out::println);
 
-            System.out.println("\n--MealRestController.getMealsBetweenDateTime--\n");
-            List<MealWithExceed> mealsWithExceed = mealRestController.getMealsBetweenDateTime(
-                    LocalDate.of(2017, Month.JULY,22), LocalTime.of(10,0),LocalDate.of(2017,Month.JULY,22),LocalTime.of(23,0));
+            System.out.println("\n--MealRestController.getMealsBetweenDate--\n");
+            List<MealWithExceed> mealsWithExceed = mealRestController.getMealsBetweenDate(
+                    LocalDate.of(2017, Month.JULY, 22), LocalDate.of(2017, Month.JULY, 24));
 
             mealsWithExceed.forEach(System.out::println);
         }

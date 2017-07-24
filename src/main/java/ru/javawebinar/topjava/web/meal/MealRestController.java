@@ -1,46 +1,58 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealWithExceed;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+
 @Controller
-public class MealRestController extends AbstractMealController {
+public class MealRestController  {
 
-    // private MealService service;
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Override
-    public Collection<Meal> getAll() {
-        return super.getAll();
+    @Autowired
+    private MealService service;
+
+    public Collection<Meal> getAll(){
+        log.info("getAll");
+        return service.getAll(AuthorizedUser.id());
     }
 
-    @Override
-    public Meal get(int mealId) {
-        return super.get(mealId);
+    public Meal get(int mealId){
+        log.info("get{}",mealId,AuthorizedUser.id());
+        return service.get(mealId, AuthorizedUser.id());
     }
 
-    @Override
-    public List<MealWithExceed> getMealsBetweenDateTime(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        return super.getMealsBetweenDateTime(startDate, startTime, endDate, endTime);
+    public Meal create(Meal meal){
+        log.info("create {}",meal,AuthorizedUser.id());
+        checkNew(meal);
+        return service.save(meal, AuthorizedUser.id());
     }
 
-    @Override
-    public Meal create(Meal meal) {
-        return super.create(meal);
+    public void delete(int mealId){
+        log.info("delete {}",mealId,AuthorizedUser.id());
+        service.delete(mealId,AuthorizedUser.id());
+    }
+    public void update(Meal meal, int mealId){
+        log.info("update{} with id={}",meal,mealId);
+        checkIdConsistent(meal, mealId);
+        service.update(meal, AuthorizedUser.id());
     }
 
-    @Override
-    public void delete(int mealId) {
-        super.delete(mealId);
-    }
-
-    @Override
-    public void update(Meal meal, int mealId) {
-        super.update(meal, mealId);
+    public List<MealWithExceed> getMealsBetweenDate(LocalDate startDate,LocalDate endDate){
+        return MealsUtil.getFilteredWithExceeded(service.getMealsBetweenDate(startDate, endDate, AuthorizedUser.id()), LocalTime.MIN, LocalTime.MAX, MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 }

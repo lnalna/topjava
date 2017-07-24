@@ -4,8 +4,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collection;
 
 
@@ -21,9 +19,7 @@ public interface MealService {
 
     Collection<Meal> getAll(int userId);
 
-    Collection<Meal> getMealsBetweenDateTime(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId);
+    Collection<Meal> getMealsBetweenDate(LocalDate startDate, LocalDate endDate, int userId);
 
-    default Collection<Meal> getBetweenDates(LocalDate startDate, LocalDate endDate, int userId){
-        return getMealsBetweenDateTime(LocalDateTime.of(startDate, LocalTime.MIN),LocalDateTime.of(endDate,LocalTime.MAX),userId);
-    }
+
 }
