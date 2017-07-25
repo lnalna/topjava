@@ -14,7 +14,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -36,8 +39,6 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         String id = request.getParameter("id");
-        String dateTime = request.getParameter("datetime");
-
 
         if(action==null) {
 
@@ -58,9 +59,38 @@ public class MealServlet extends HttpServlet {
 
         } else {
 
-            request.setAttribute("meals",
-                    MealsUtil.getWithExceeded(mealRestController.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
+            try {
+                if (request.getParameter("startDate") != null && request.getParameter("endDate") != null) {
+
+                    LocalDate startDate = LocalDate.parse(request.getParameter("startDate"));
+                    LocalDate endDate = LocalDate.parse(request.getParameter("endDate"));
+
+                    request.setAttribute("meals",
+                            mealRestController.getMealsBetweenDate(startDate, endDate));
+                    request.getRequestDispatcher("/meals.jsp").forward(request, response);
+
+                } else if (request.getParameter("startTime") != null && request.getParameter("endTime") != null) {
+
+                    LocalTime startTime = LocalTime.parse(request.getParameter("startTime"));
+                    LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
+
+                    request.setAttribute("meals",
+                            mealRestController.getMealBetweenTime(startTime, endTime));
+                    request.getRequestDispatcher("/meals.jsp").forward(request, response);
+
+                } else {
+
+                    request.setAttribute("meals",
+                            MealsUtil.getWithExceeded(mealRestController.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                    request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                }
+            }catch (DateTimeParseException e){
+
+                /*
+                 this try/catch FOR FIREFOX and IE
+                 */
+                response.sendRedirect("/topjava/error.jsp");
+            }
         }
     }
 

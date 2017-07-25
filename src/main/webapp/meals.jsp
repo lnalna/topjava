@@ -37,26 +37,39 @@
     <h3><a href="index.html">Home</a></h3>
     <h2>Meal list user</h2>
 
-    <form method="post" action="meals?action=selectdatetime">
+  <section>
+    <form method="post" action="meals?action=selectdate">
         <dl>
             <dt>From Date:</dt>
-            <dd><input type="date" name="startDate"></dd>
+            <dd><input type="date" max="2020-12-31" min="2000-01-01" value="2015-05-30"  name="startDate"></dd>
         </dl>
         <dl>
             <dt>To Date:</dt>
-            <dd><input type="date" name="endDate"></dd>
+            <dd><input type="date" max="2020-12-31" min="2000-01-01" value="2015-05-31" name="endDate"></dd>
         </dl>
+        <button type="submit">FilterByDate</button>
+    </form>
+  </section>
+  <br>
+<hr>
+  <br>
+  <section>
+    <form method="post" action="meals?action=selecttime">
         <dl>
+
             <dt>From Time:</dt>
-            <dd><input type="time" name="startTime"></dd>
+            <dd><input type="time" max="23:59" min="00:00" value="10:00" name="startTime"></dd>
         </dl>
         <dl>
             <dt>To Time:</dt>
-            <dd><input type="time" name="endTime"></dd>
+            <dd><input type="time" max="23:59" min="00:00" value="20:00" name="endTime"></dd>
         </dl>
-        <button type="submit">FilterDateTime</button>
+        <button type="submit">FilterByTime</button>
     </form>
-
+  </section>
+<br>
+<hr>
+<br>
     <a href="meals?action=create">Add Meal</a>
     <hr/>
     <table border="1" cellpadding="8" cellspacing="0">
