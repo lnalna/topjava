@@ -1,3 +1,4 @@
+/*
 package ru.javawebinar.topjava.util;
 
 import org.springframework.core.io.DefaultResourceLoader;
@@ -20,3 +21,4 @@ public class DbPopulator extends ResourceDatabasePopulator {
         execute(dataSource);
     }
 }
+*/
