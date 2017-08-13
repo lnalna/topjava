@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.model.User;
 
 import java.util.List;
 
+@SuppressWarnings("JpaQlInspection")
 @Transactional(readOnly = true)
 public interface CrudUserRepository extends JpaRepository<User, Integer> {
     @Transactional
@@ -29,4 +30,7 @@ public interface CrudUserRepository extends JpaRepository<User, Integer> {
     List<User> findAll(Sort sort);
 
     User getByEmail(String email);
+
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.meals WHERE u.id=?1")
+    User getWithMeals(int id);
 }
