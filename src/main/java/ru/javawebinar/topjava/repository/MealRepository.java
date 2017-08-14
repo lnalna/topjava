@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +22,6 @@ public interface MealRepository {
     List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId);
 
     default Meal getWithUser(int id, int userId){
-        throw new NotFoundException("Not found meal with id="+id+" and user with userId="+userId);
+        throw new UnsupportedOperationException();
     }
 }
