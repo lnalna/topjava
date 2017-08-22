@@ -4,17 +4,6 @@
 
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <style>
-        .normal {
-            color: green;
-        }
-        .exceeded {
-            color: red;
-        }
-    </style>
-</head>
 
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
@@ -24,7 +13,7 @@
     <h3><spring:message code="${meal.isNew() ? 'meals.add' : 'meals.edit'}"/></h3>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     
-    <form method="post" action="/topjava/meals">
+    <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meals.dateTime"/>:</dt>
