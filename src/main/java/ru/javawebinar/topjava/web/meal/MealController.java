@@ -26,11 +26,17 @@ public class MealController extends AbstractMealController{
 
     @Autowired
     private MealService mealService;
-
+/*
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getAllMeals(Model model){
         model.addAttribute("meals", MealsUtil.getWithExceeded(mealService.getAll(AuthorizedUser.id()), AuthorizedUser.getCaloriesPerDay()));
         return "/meals";
+    }
+*/
+    @RequestMapping(method = RequestMethod.GET)
+    public String meals(Model model){
+        model.addAttribute("meals", MealsUtil.getWithExceeded(mealService.getAll(AuthorizedUser.id()), AuthorizedUser.getCaloriesPerDay()));
+        return "meals";
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
@@ -62,7 +68,7 @@ public class MealController extends AbstractMealController{
         }else{
             super.update(meal,getId(request));
         }
-        return "redirect:/meals";
+        return "redirect:meals";
     }
 
     @RequestMapping(value = "/filter", method = RequestMethod.POST)
