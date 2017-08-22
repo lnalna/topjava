@@ -40,8 +40,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void testDelete() throws Exception {
-        service.delete(USER_ID);
-        MATCHER.assertCollectionEquals(Collections.singletonList(ADMIN), service.getAll());
+        service.delete(ADMIN_ID);
+        MATCHER.assertCollectionEquals(Collections.singletonList(USER), service.getAll());
     }
 
     @Test(expected = NotFoundException.class)
@@ -51,8 +51,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void testGet() throws Exception {
-        User user = service.get(USER_ID);
-        MATCHER.assertEquals(USER, user);
+        User admin = service.get(ADMIN_ID);
+        MATCHER.assertEquals(ADMIN, admin);
     }
 
     @Test(expected = NotFoundException.class)
@@ -62,8 +62,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void testGetByEmail() throws Exception {
-        User user = service.getByEmail("user@yandex.ru");
-        MATCHER.assertEquals(USER, user);
+        User admin = service.getByEmail("admin@gmail.com");
+        MATCHER.assertEquals(ADMIN, admin);
     }
 
     @Test
@@ -74,11 +74,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void testUpdate() throws Exception {
-        User updated = new User(USER);
+        User updated = new User(ADMIN);
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
+        updated.setRoles(Collections.singleton(Role.ROLE_ADMIN));
         service.update(updated);
-        MATCHER.assertEquals(updated, service.get(USER_ID));
+        MATCHER.assertEquals(updated, service.get(ADMIN_ID));
     }
 
 }
