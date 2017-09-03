@@ -16,6 +16,7 @@ import java.util.Arrays;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +28,7 @@ import static ru.javawebinar.topjava.web.RootControllerTest.USER_ID;
 public class MealRestControllerTest extends AbstractControllerTest {
 
     private static final String TEST_REST_URL = MealRestController.REST_URL+'/';
+    private static final String DATE_TIME_BETWEEN = "between?startDateTime=2015-05-31T10:00&endDateTime=2015-06-01T21:00";
 
     @Autowired
     private MealService mealService;
@@ -64,6 +66,27 @@ public class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
+        AuthorizedUser.setId(USER_ID);
+        Meal updatedMeal = getUpdated();
+
+        mockMvc.perform(put(TEST_REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedMeal)))
+                .andExpect(status().isOk());
+
+        MATCHER.assertEquals(updatedMeal, mealService.get(MEAL1_ID,USER_ID));
+
+    }
+
+    @Test
+    public void testUpdateAdmin() throws Exception {
+        AuthorizedUser.setId(ADMIN_ID);
+        Meal updatedMeal = getUpdatedAdmin();
+
+        mockMvc.perform(put(TEST_REST_URL + ADMIN_MEAL_ID).contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedMeal)))
+                .andExpect(status().isOk());
+
+        MATCHER.assertEquals(updatedMeal, mealService.get(ADMIN_MEAL_ID,ADMIN_ID));
 
     }
 
@@ -121,5 +144,30 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MATCHER_EXCEED.contentListMatcher(MealsUtil.getWithExceeded(ADMIN_MEALS, AuthorizedUser.getCaloriesPerDay())));
+    }
+
+    @Test
+    public void testGetBetween() throws Exception {
+        AuthorizedUser.setId(USER_ID);
+        mockMvc.perform(get(TEST_REST_URL + DATE_TIME_BETWEEN))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MATCHER_EXCEED.contentListMatcher(
+                        MealsUtil.createWithExceed(MEAL6, true),
+                        MealsUtil.createWithExceed(MEAL5, true),
+                        MealsUtil.createWithExceed(MEAL4, true)
+                ));
+    }
+
+    @Test
+    public void testGetBetweenAdmin() throws Exception {
+        AuthorizedUser.setId(ADMIN_ID);
+        mockMvc.perform(get(TEST_REST_URL + DATE_TIME_BETWEEN))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MATCHER_EXCEED.contentListMatcher(
+                        MealsUtil.createWithExceed(ADMIN_MEAL2, true),
+                        MealsUtil.createWithExceed(ADMIN_MEAL1, true)
+                ));
     }
 }
