@@ -170,4 +170,32 @@ public class MealRestControllerTest extends AbstractControllerTest {
                         MealsUtil.createWithExceed(ADMIN_MEAL1, true)
                 ));
     }
+
+    @Test
+    public void testFilter() throws Exception{
+        AuthorizedUser.setId(USER_ID);
+        mockMvc.perform(get(TEST_REST_URL + "filter")
+                .param("startDate", "2015-05-31").param("startTime", "10:00")
+                .param("endDate", "2015-05-31").param("endTime","14:00"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MATCHER_EXCEED.contentListMatcher(
+                        MealsUtil.createWithExceed(MEAL5, true),
+                        MealsUtil.createWithExceed(MEAL4, true)
+                ));
+    }
+
+    @Test
+    public void testFilterAdmin() throws Exception{
+        AuthorizedUser.setId(ADMIN_ID);
+        mockMvc.perform(get(TEST_REST_URL + "filter")
+                .param("startDate", "2015-06-01")
+                .param("endDate", "2015-06-01"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MATCHER_EXCEED.contentListMatcher(
+                        MealsUtil.createWithExceed(ADMIN_MEAL2, true),
+                        MealsUtil.createWithExceed(ADMIN_MEAL1, true)
+                ));
+    }
 }
