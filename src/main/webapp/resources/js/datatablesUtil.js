@@ -1,15 +1,9 @@
+var form;
+
 function makeEditable() {
-    $(".delete").click(function () {
-        deleteRow($(this).attr("id"));
-    });
-
-    $("#detailsForm").submit(function () {
-        save();
-        return false;
-    });
-
+    form = $('#detailsForm');
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
-        failNoty(event, jqXHR, options, jsExc);
+        failNoty(jqXHR);
     });
 
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
@@ -17,7 +11,7 @@ function makeEditable() {
 }
 
 function add() {
-    $("#detailsForm").find(":input").val("");
+    form.find(":input").val("");
     $("#editRow").modal();
 }
 
@@ -32,7 +26,7 @@ function deleteRow(id) {
     });
 }
 
-function updateTable() {
+function updateTableByData() {
     $.get(ajaxUrl, function (data) {
         datatableApi.clear().rows.add(data).draw();
     });
